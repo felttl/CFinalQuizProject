@@ -27,17 +27,26 @@
 # compilation d'un fichier en c / compilning file function
 # simple compilation interpretation (SCI)
 sci(){
+    extensionResult=""
+    # default
+    if [ "$2" == "" ]; then
+        $extensionResult = ".sh"
+    else 
+        $extensionResult = "$2"
+    fi
+
     clear # linux / cls with windows
     # input file $1 (name into variable)  # compilation
     gcc -c $( echo "$1") 
     # exec now out namefile.o # shell de 
     # linux donc .sh avec windows : .exe
-    gcc $( echo "${1/.c/'.o'}") -o $( echo "${1/.c/'.sh'}") 
+    gcc $( echo "${1/.c/'.o'}") -o $( echo "${1/.c/'$extensionResult'}") 
     # ./a.sh  # lancement du fichier (interpretation) 
     # (interprete avec le nom donné en 
     # paramètre suivie de l'extension .sh)
-    "./$( echo "${1/.c/'.sh'}")"    
+    "./$( echo "${1/.c/'$extensionResult'}")"    
 }
+# second parameter is output extension
 sci $1
 
 
