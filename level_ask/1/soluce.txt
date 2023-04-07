@@ -1,0 +1,10 @@
+1000000000
+oui
+1 janvier 1970 epoch
+Linux
+shutdown
+c'est l'accés administrateur 
+Java
+javascript
+a = a + 1, a += 1, a++
+majuscule et minuscule

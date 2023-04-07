@@ -1,0 +1,10 @@
+combien fait 512 (base 10) en binaire (base 2) ?
+un nombre écrit dans une base plus élevée fais-elle diminuer la taille d'écriture du nombre ?
+quel est la date utilisé dans la majorité des odrinateurs ? quel est son nom ?
+quel est le système d'exploitation dont l'icone est un manchot  ?
+quel est la commande la plus utile pour eteindre un ordinateur avec linux ?
+c'est quoi sudo ? (env 3 mots)
+quel est le langage qui est utilisé pour réaliser des actions et interfaces quelque soit le système d'exploitation ?
+quel est le langage web le plus utilisé de nos jours ? 
+quel sont les 3 façon d'incrémenter une variable entière a ?
+c'est quoi uppercase(d) et lowercase(d) ?

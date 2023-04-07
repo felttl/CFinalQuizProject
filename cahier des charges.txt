@@ -1,0 +1,46 @@
+Quiz
+Structure Question
+
+Question, reponse1, reponse2, reponse3, reponse4, indexReponseCorrecte, niveau
+
+Ecrire les questions selon la structure Question dans un fichier texte.
+Fonctionnalités :
+
+    Lire un fichier de questions
+    Sélectionner les questions d’un niveau demandé
+    Tirer aléatoirement 10 questions parmi un niveau demandé. Attention il ne faut pas de doublon.
+    Afficher une question
+    Enregistrer une réponse dans un tableau
+    Enregistrer un score dans un fichier
+    Vérifier une réponse pour savoir si elle est correcte ou non
+    Jouer un son si le score est égal ou supérieur à 8 points
+
+Déroulement du jeu :
+
+    Demander un pseudo à l’utilisateur
+    Proposer le menu
+        Jouer
+        Tableau des scores
+        Quitter
+
+    Jouer :  
+        Demander un niveau de jeu
+        Dérouler le quiz
+            Afficher une question et les 4 réponses possibles
+            Récupérer la réponse de l’utilisateur
+            Enregistrer la réponse dans un tableau
+        Vérifier la correction des réponses
+        Calculer le score
+        Enregistrer le score dans un fichier
+        Afficher le score et jouer le son si score >= 8 points
+    Demander à l’utilisateur s’il souhaite continuer
+        Oui -> sélectionner 10 questions du niveau supérieur si score >= 8
+        Oui -> sélectionner 10 questions du même niveau sinon
+        Non -> Afficher le menu
+
+    Tableau des scores :
+        Lire le fichier des scores et l’afficher
+
+    Quitter :
+        Quitter le programme
+
