@@ -24,8 +24,7 @@
 
 
 
-
-# compilation d'un fichier en c le nom de sortie est a.sh
+# compilation d'un fichier en c / compilning file function
 # simple compilation interpretation (SCI)
 sci(){
     clear # linux / cls with windows
