@@ -8,8 +8,9 @@ typedef enum{true, false} bool ; // boolean type (don't use shit library)
 
 // faire un système de son pour savoir
 // si on a réussi ou non
-#include <windows.h>
-#include <dos.h>
+// je ne possède pas al lib sur ce pc
+//#include <windows.h> // a tester sur une autre machien pour tester le fonctionnement
+//#include <dos.h>
 
 /* 	Cahier Des Charges :
 
@@ -19,7 +20,7 @@ typedef enum{true, false} bool ; // boolean type (don't use shit library)
 
 */
 // nb de lignes a ne pas dépasser
-static int LIGNES_MAX_FICHIER = 11;
+static int LIGNES_MAX_FICHIER = 10;
 
 
 
@@ -29,32 +30,24 @@ int request(int ligne, char* update_request, float pts, int niveau){
 	char* result = NULL;
 	int cpt = 0; // compteur ligne
 	char chaine[100]; // la longueur de chaque fichier est une question donc n'exède pas 100 charactères
-	FILE * fichier_question; // structure du contenu de fichier
-
-
+	FILE * fichierQuestion; // structure du contenu de fichier
 	fopen("ask.txt", "r");
-	while(!feof(monfichier)){
-    	fgets(chaine, 100, monfichier);
+	while(!feof(fichierQuestion)){
+    	fgets(chaine, 100, fichierQuestion);
     }
-	
-
 	free(result); // libère la mémoire
 	return EXIT_SUCCESS;
 }
 
 // enregistre dans un fichier vide déja créé les éléments
 // persistance des données
-int enregistrer_score(char* str_data){
+int enregistrerScore(char* strData, char*nomFichier){
 
     /* Variable to store user content */
-    char data[DATA_SIZE];
+    char data[strlen(strData)];
     /* File pointer to hold reference to our file */
     FILE * fPtr;
-    /* 
-     * Open file in w (write) mode. 
-     * "data/file1.txt" is complete path to create file
-     */
-    fPtr = fopen("save.txt", "w");
+    fPtr = fopen(nomFichier, "w");
     /* fopen() return NULL if last operation was unsuccessful */
     if(fPtr == NULL){
         /* File not created hence exit */
@@ -62,13 +55,12 @@ int enregistrer_score(char* str_data){
         exit(EXIT_FAILURE);
     }
     /* Write data to file */
-    fputs(str_data, fPtr);
+    fputs(strData, fPtr);
     /* Close file to save file data */
     fclose(fPtr);
     /* Success message */
     printf("File created and saved successfully. :) \n");
     return 0;
-
 }
 
 // lire un fichier et afficher la ligne lue
@@ -90,7 +82,7 @@ int readOneLine(char*filepath,int line_num,char* getLine){
 		// afichage si vrai :
 		if (linen == line_num){
 			printf("%s\n", displayText);
-			strcpy(getLine, displayText)
+			strcpy(getLine, displayText);
 			line_num = linen;
 			carry = false;
 		}
@@ -137,49 +129,33 @@ int strCompare(char*response, char*ask, float similarity){
 				}
 			} else { // not same letter
 				similarity *= 101e-2;
-			}
+			} // size is different we don't add points
 		}
 	}
 	return EXIT_SUCCESS;
 }
 
 
-// load saved date if exists :
-int load_saved(char*fileNameyPath,float level, char* nb_questions){
-    fPtr = fopen(fileNameyPath, "w");
-    /* fopen() return NULL if last operation was unsuccessful */
-    if(fPtr == NULL){
-        /* File not created hence exit */
-        printf("can't create file ! \n");
-        exit(EXIT_FAILURE);
-    } else {
-		// insert data
-
-    	// must use parameters to store data in them
-    }
-    return EXIT_SUCCESS;
-}
-
 
 // créer un menu de sélection 
 char menu(){
 	char etat;
 	printf("\n");
-	printf("┌────────── Menu ────────────┐\n");
+	printf("┌──────────── Menu ──────────┐\n");
 	printf("│	q : quitter   	 		 │\n");
 	printf("│	c : continuer 	 		 │\n");
 	printf("│	s : enregistrer   		 │\n");
 	printf("│	a : afficher points		 │\n");	
 	printf("│	l : changer de niveau	 │\n");		
 	printf("└────────────────────────────┘\n");
-	scanf("%c", etat);+
+	scanf("%c", etat);
 	return etat;
 }
 
 // resize the filesize at input keyboard (From : Google) not require initiasize
-char*inputString(FILE* fp, size_t size){
+char*inputString(){
 //The size is extended by the input with the value of the provisional
-	const FILE*fp= stdin; // get stdinput
+	FILE*fp= stdin; // get stdinput
 	size_t size=10; // unknow
 
     char *str;
@@ -195,17 +171,27 @@ char*inputString(FILE* fp, size_t size){
         }
     }
     str[len++]='\0';
-
     return realloc(str, sizeof(*str)*len);
 }
 
-// fonction qui renvoie une chaine de charactère dont la paramètre est concaténé
-// la la suite d'une chaine de base (permet de naviguer dans une
-// arborescence en limitant le nombre d'intérations)
-char* shortcat(char*base, int lenbase, char*stack, int lenstack){
-	char*strresult[lenbase+lenstack]=base;
-	strcat(strresult, stack);
-	return strresult;
+
+
+
+/// VERIFIEE !! (ça marche)
+// permet de mettre a jour le chemin de navigation temporaire
+// si un utilisateur veut changer de niveau en cours de partie
+int updateNav(char*toUpdate, int rank, char*base, char*endfilepath){
+	// onvertir l'entier en chaine ici 
+	char tempconvert[9] = " ";
+	// copie la partie gauche du chemin d'accés 
+	// doit écraser les données précédentes
+	strcpy(toUpdate, base); 
+	sprintf(tempconvert, "%d", rank);
+	// concat le milieu (partie changeante)
+	strcat(toUpdate, tempconvert);
+	// concat la partie de fin (droite et aussi partie changeante)
+	strcat(toUpdate, endfilepath);
+	return EXIT_SUCCESS;
 }
 
 
@@ -226,25 +212,24 @@ int main(){
 	int level; // store player level
 	// ne pas recommencer 2 fois la même question
 	// allocation dynamique : (tableau d'entiers pour le n° de lignes)
-	int*questionsFaites = NULL; // store all checked lines numbers
-	questionsFaites = (int *) malloc( 1 ); 
 	const char chemin[19] = "./level_ask/"; // filepath navigation
 	char tempChemin[9] = "";
-	char*reponseJoueur[10]; // stocke 10 chaines de charactères
+	char*navChemin[19] = "./level_ask/"; // chaine pour le déplacement (modifiable)
+	char reponseJoueur[3][10]; // stocke 10 chaines de charactères (3 listes de 10 réponses (string))
 	char*bonneReponse[10]; // stocke 10 chaines de charactères
+	int choixniveau;
+	int listNumNiveaux[3][10]; // stocker toutes les réponse déja faites pour chaque niveau
 	printf("Bienvenu dans le Quizz sur l'informatique\n");
 
 	printf("entrez votre pseudo : \n");
 	stringInput(pseudo);
 	prtinf("choisir le niveau : (facile, moyen, difficile)\n");
 	printf("avec les touches respectives 1, 2, et 3 : \n");
-	scanf("%d", level);
+	scanf("%d", choixniveau);
 
-	// on saisie le niveau qu'une seule fois
-    if (level <= 3 && level >= 1){
-    	sprintf(tempChemin, "%d", level);  
-    	strcat(tempChemin, "/ask.txt");
-    	strcat(chemin, temp);
+	// on saisie le niveau qu'une seule fois (sauf si le joueur veut changer)
+    if (choixniveau <= 3 && choixniveau >= 1){
+		updateNav(navChemin, choixniveau, chemin, "/ask.txt");
     } else { // saisie invalide
         printf("saisie non valide\n");
         carry = false;
@@ -258,12 +243,15 @@ int main(){
 		if (saisie_user == 'c'){
 			// on continue de jouer
 			printf("répondez a la question suivate :\n");
-			readOneLine(chemin, choixLigne, bonneReponse);
-			&reponseJoueur[nbTours] = inputString();
+			readOneLine(navChemin, choixLigne, bonneReponse);
+			// pour l'enregistrement des données
+			reponseJoueur[nbTours] = inputString(); 
 			// ajouter points 
-			strCompare(bonneReponse, &reponseJoueur, level);
-			// ajouter la ligne parcourue 
+			strCompare(bonneReponse, reponseJoueur, level);
+			// ajouter la ligne parcourue (pour pas reposer la même question)
 			questionsFaites[n] = choixLigne;
+
+
 		} else if (saisie_user == 's'){
 			// on enregistre dans un fichier toutes
 			// les saisies précédentes 
@@ -274,6 +262,23 @@ int main(){
 			carry = false
 		} else if (saisie_user == 'a'){
 			// afficher les points 
+			printf("vous avez : %f\t points\n", level);
+		} else if (saisie_user == 'l'){
+			// changer de niveau
+			printf("vous choisissez quel niveau ? (");
+			for (int j=1;i<4){
+				if (choixniveau != i){
+					printf("%d", j);
+				}
+				if (j != 3){
+					printf(',');
+				}
+			}
+			printf(")\n");
+			scanf("%d", choixniveau);
+			updateNav(navChemin, choixniveau, chemin, "/ask.txt");
+			// et on remet la listes des lignes déja faites a zero ?
+			printf("changement effectué");
 		} else if (gagne){
 			// gagné !!!
 			printf("vous avez gagné\n");
@@ -291,7 +296,7 @@ int main(){
 	printf("au revoir\n");
 
 	free(questionsFaites);
-	free(&reponseJoueur);
+	free(reponseJoueur);
 	free(bonneReponse);
 
 	return EXIT_SUCCESS;

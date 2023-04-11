@@ -26,7 +26,7 @@
 
 # compilation d'un fichier en c / compilning file function
 # simple compilation interpretation (SCI)
-sci(){
+sci0(){
     extensionResult=""
     # default
     if [ "$2" == "" ]; then
@@ -47,9 +47,16 @@ sci(){
     "./$( echo "${1/.c/'$extensionResult'}")"    
 }
 # second parameter is output extension
+#sci $1
+
+
+sci(){
+    clear
+    gcc -c $( echo "$1") 
+    gcc $( echo "${1/.c/'.o'}") -o $( echo "${1/.c/'.sh'}") 
+    "./$( echo "${1/.c/'.sh'}")"        
+}
 sci $1
-
-
 
 
 
