@@ -114,11 +114,11 @@ int readOneLine(char*filepath,int line_num,char* getLine){
 // osx/macos (apple sys)
 
 
-bool charIsInListStr(char one_char, char*list_string){
+bool charIsInListStr(char oneChar, char*listString){
 	int cpt = 0;
 	bool carry = true;
-	while (cpt < strlen(list_string) && carry){
-		if (one_char == list_string[cpt]){
+	while (cpt < strlen(listString) && carry){
+		if (oneChar == listString[cpt]){
 			carry = false;
 		}
 		cpt++;

@@ -1,1 +1,10 @@
 combient font 38 en base 10 convertit en base 9 ?
+y a t'il une grande différence entre un os android et celui de linux
+qu'est-ce qu'un fichier APK
+qu'utilise-t-on pour créer des jeux vidéos (et faire les effets physiques)
+qu'est-ce qu'un Sprite ?
+quel est l'utilité d'un DNS
+c'est quoi un FTP ?
+c'est quoi un patron de programmation (design pattern)?
+c'est quoi un Singleton ?
+comment apelle-t-on une classe qui hérite d'une autre classe ?
