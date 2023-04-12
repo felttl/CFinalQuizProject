@@ -1,4 +1,10 @@
 combien font 113/7 en base 10 en base 13 (7 nombres après la virgule attendus) ?
 comment est codé une couleur dans un terminal et quelle est sa structure ?
 quel est le nom de la courbe générée d'une complexité n² ?
-c'est quoi un MLD
+c'est quoi un MLD ?
+c'est quoi le principe d'une courbe de convolution ?
+c'est quoi un Framework ?
+c'est quoi le DOM ?
+c'est qioi le BOM ?
+c'est quoi WYSIWYG ?
+c'est quoi MVC ? 

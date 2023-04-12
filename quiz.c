@@ -142,7 +142,7 @@ bool intIsInListints(int oneNum, int*listNum, int tailletab){
 
 
 
-// comparer deux chaine (avec une proportion de simillarité)
+// comparer deux chaine de façon plus avancée(avec une proportion de simillarité)
 int strCompare(char*response, char*ask, float similarity){
 	// les chaines n'on pas la même taille :
 	int osize = strlen(response);
@@ -151,10 +151,10 @@ int strCompare(char*response, char*ask, float similarity){
 		for (int ii=0;ii<strlen(ask);ii++){
 			// similarity
 			if (response[i] == ask[ii]){
-				// already seen
-				if (response[i] == ask[i]){
+				// same positions
+				if (i == ii){
 					similarity += (1/osize)/2;
-				} else {// never seen
+				} else {// different positions
 					similarity += (1/osize);
 				}
 			} else { // not same letter
@@ -245,7 +245,7 @@ int main(){
 	char chemin[19] = "./level_ask/"; // filepath navigation
 	char tempChemin[9] = ""; // stockage du nombre saisi par l'utilisateur convertit en chaine
 	char navChemin[19] = "./level_ask/"; // chaine pour le déplacement (modifiable)
-	char reponseJoueur[10][30]; // une liste de 10 chaines de caractères de 30 caractères
+	char reponseJoueur[10][300]; // une liste de 10 chaines de caractères de 300 caractères
 	char bonneReponse[10]; // chaine de 10 charactères
 	int choixniveau;  // saisi utilisateur
 	int listNumNiveaux[10]; // stocker toutes les réponse (n°lignes) déja faites pour chaque niveau 
@@ -291,7 +291,7 @@ int main(){
 		} else if (saisie_user == 's'){
 			// on enregistre dans un fichier toutes les saisies précédentes 
 			//enregistrerScore(char* strData, char*pseudo, int niveau, float score, char*nomFichier)
-			char tempStartTrame[378] = "-----------------------------------------------------------------\n";
+			char tempStartTrame[2378] = "-----------------------------------------------------------------\n";
 			strcat(tempStartTrame, "QUESTIONS : \n");
 			char tempsLineNumberChar[2];
 			// pour toutes les question on les stack dans le fichier :

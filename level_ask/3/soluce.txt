@@ -2,3 +2,9 @@
 c'est codé comme des chaines de caractères avec unicode de la manière suivante : unicode+caractère+plusieurs caractères ou nombre d'indentification
 quadratique
 Modèle Logique des Données qui permet représentation en ligne du schéma représentant la structure de la base de données
+c'est ce qui permet de créer un nouveau signal a partir de deux signaux de départs (trés utilisés dans les IA)
+Un framework est un ensemble d'outils et de composants logiciels organisés conformément à un plan d'architecture et des patterns(déja vu)
+Le Document Object Model (DOM) est une interface de programmation normalisée par le W3C
+Le Browser Object Model (BOM) est le noyau de JavaScript dans le navigateur web qui permet de fournire des fonctionnalités au navigateur indépendamment du contenu de la page web.
+"what you see is what you get" permet à l'utilisateur de voir son document tel qu'il sera publié(mode preview lors de la création de nouveau contenu)
+Movdèle Vue Contrôleur en français est un motif d'architecture logicielle qui sépare une application en trois composants logiques : le modèle la vue et le contrôleur
