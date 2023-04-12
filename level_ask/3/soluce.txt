@@ -1,1 +1,4 @@
 39.2857142
+c'est codé comme des chaines de caractères avec unicode de la manière suivante : unicode+caractère+plusieurs caractères ou nombre d'indentification
+quadratique
+Modèle Logique des Données qui permet représentation en ligne du schéma représentant la structure de la base de données
