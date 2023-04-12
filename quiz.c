@@ -175,7 +175,8 @@ char menu(){
 	printf("│	q : quitter   	 		 │\n");
 	printf("│	c : continuer 	 		 │\n");
 	printf("│	s : enregistrer   		 │\n");
-	printf("│	a : afficher points		 │\n");		
+	printf("│	a : afficher points		 │\n");	
+	printf("│	l : changer de niveau	 │\n");		
 	printf("└────────────────────────────┘\n");
 	scanf("%c", etat);
 	return etat;
@@ -186,7 +187,9 @@ char*inputString(){
 //The size is extended by the input with the value of the provisional
 	FILE*fp= stdin; // get stdinput
 	size_t size=10; // unknow
-
+	/*IMPORTANT : si la chaine est de taille constante
+		le free() est automatiquement appliqué par le langage C
+		sauf déclaration de départ avec une taille omise*/
     char *str;
     int ch;
     size_t len = 0;
@@ -235,7 +238,7 @@ int main(){
 	char pseudo[25];
 	float points = 0.0; 
 	bool carry = true;
-	char saisie_user;
+	char saisieUser;
 	// ne dois pas dépasser le nombre de question dans le fichier
 	int nbTours = 0; 
 	bool gagne = false; 
@@ -248,7 +251,7 @@ int main(){
 	char reponseJoueur[10][300]; // une liste de 10 chaines de caractères de 300 caractères
 	char bonneReponse[10]; // chaine de 10 charactères
 	int choixniveau;  // saisi utilisateur
-	int listNumNiveaux[10]; // stocker toutes les réponse (n°lignes) déja faites pour chaque niveau 
+	int listNumNiveaux[3][10]; // stocker toutes les réponse (n°lignes) déja faites pour chaque niveau 
 	printf("Bienvenu dans le Quizz sur l'informatique\n");
 
 	printf("entrez votre pseudo : (25 caractères max)\n");
@@ -271,12 +274,12 @@ int main(){
 		// on fait un nouveau aléatoire tant que qu'il est déja présent dans la liste
 		// on aurait pu aussi faire une liste des éléments autorisés et les supprimer au fur et a mesure
 		// que le joueur choisi des choix et faire un nombre aléatoire des index de cette liste (éviter le while)
-		while (intIsInListints(choixLigne, listNumNiveaux, nbTours+1)){
+		while (intIsInListints(choixLigne, listNumNiveaux[level], nbTours+1)){
 			choixLigne = rand() % LIGNES_MAX_FICHIER;
 		}
-		saisie_user = menu();
+		saisieUser = menu();
 		// je déteste les switch désolé
-		if (saisie_user == 'c'){
+		if (saisieUser == 'c'){
 			// on continue de jouer
 			printf("répondez a la question suivate :\n");
 			readOneLine(navChemin, choixLigne, bonneReponse);
@@ -285,10 +288,12 @@ int main(){
 			// ajouter points 
 			strCompare(bonneReponse, reponseJoueur[nbTours], points);
 			// ajouter la ligne parcourue (pour pas reposer la même question)
-			listNumNiveaux[nbTours] = choixLigne; // un entier dans un entier
-
-
-		} else if (saisie_user == 's'){
+			listNumNiveaux[level][nbTours] = choixLigne; // un entier dans un entier
+			// on buff le niveau comme écrit dans les cahier des charges
+			if (level < 3 && points >= 8){
+				level++;
+			}
+		} else if (saisieUser == 's'){
 			// on enregistre dans un fichier toutes les saisies précédentes 
 			//enregistrerScore(char* strData, char*pseudo, int niveau, float score, char*nomFichier)
 			char tempStartTrame[2378] = "-----------------------------------------------------------------\n";
@@ -299,13 +304,14 @@ int main(){
 				sprintf(tempsLineNumberChar, "%d", i); // delete last psintf
 				strcat(tempStartTrame, "question n°");
 				strcat(tempStartTrame, tempsLineNumberChar);
+				strcat(tempStartTrame, reponseJoueur[i]);
 			}
 			
 			enregistrerScore(tempStartTrame, pseudo, level, points, "userQuestions.txt");
-		} else if (saisie_user == 'q'){
+		} else if (saisieUser == 'q'){
 			// on part sans enregistrer
 			carry = false;
-		} else if (saisie_user == 'a'){
+		} else if (saisieUser == 'a'){
 			// afficher les points 
 			printf("vous avez : %.4f\t points.\n", points);
 		} else if (points >= 8.0){
@@ -318,7 +324,16 @@ int main(){
 		} else if (nbTours == 10){
 			// tt les questions terminées
 			printf("vous avez fait toutes les questions\n");
-			carry = false;			
+			carry = false;		
+		} else if (saisieUser == 'l'){
+			// changer de niveau
+			int tempLevelError = level; // crée une copie de la variable level (si on modifie level il n'y a pas d'incidence)
+			printf("vous choisissez quel niveau ?\n");
+			scanf("%d", level);
+			if (level < 1 && level > 3){
+				level = tempLevelError;
+				printf("mauvaise saisie, le niveau va rester le même\n");
+			}
 		} else {
 			// mauvaise saisie
 			printf("vous avez mal répondu !!!\n");
