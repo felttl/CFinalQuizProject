@@ -1,0 +1,1 @@
+combien font 113/7 en base 10 en base 13 (7 nombres après la virgule attendus) ?

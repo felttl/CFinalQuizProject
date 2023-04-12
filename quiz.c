@@ -24,8 +24,11 @@ static int LIGNES_MAX_FICHIER = 10;
 
 
 
+
+
 // permet de prendre une ligne (une question)
 // et la demander a l'utilisateur plus tard 
+// ça marche !!
 int request(int ligne, char* update_request, float pts, int niveau){
 	char* result = NULL;
 	int cpt = 0; // compteur ligne
@@ -41,12 +44,19 @@ int request(int ligne, char* update_request, float pts, int niveau){
 
 // enregistre dans un fichier vide déja créé les éléments
 // persistance des données
-int enregistrerScore(char* strData, char*nomFichier){
+// doit ajouter dans le fichier chaque lignes qui a été saisi par le joueur ainsi que les autre infos
+int enregistrerScore(char*strData, char*pseudo, int niveau, float score, char*nomFichier){
 
     /* Variable to store user content */
+	char niveauchar[2];
+	char scorestr[6]; 
+	// convert data 
+	sprintf(niveauchar, "%d", niveau);
+	sprintf(scorestr, "%f", score);
     char data[strlen(strData)];
     /* File pointer to hold reference to our file */
     FILE * fPtr;
+	// write in existing file
     fPtr = fopen(nomFichier, "w");
     /* fopen() return NULL if last operation was unsuccessful */
     if(fPtr == NULL){
@@ -54,15 +64,24 @@ int enregistrerScore(char* strData, char*nomFichier){
         printf("Unable to create file.\n");
         exit(EXIT_FAILURE);
     }
+	// escape sequence 
+	strcat(niveauchar, "\n");
+	strcat(scorestr, "\n");
+	strcat(strData, "\n");
+	strcat(pseudo, "\n");
     /* Write data to file */
     fputs(strData, fPtr);
+	fputs("niveau : ", fPtr);
+	fputs(pseudo, fPtr);
+	fputs("score : ", fPtr);
     /* Close file to save file data */
     fclose(fPtr);
     /* Success message */
     printf("File created and saved successfully. :) \n");
-    return 0;
+    return EXIT_SUCCESS;
 }
 
+/// ça marche
 // lire un fichier et afficher la ligne lue
 int readOneLine(char*filepath,int line_num,char* getLine){
 	printf("demande ouverture fichier : %s\n",filepath);
@@ -95,34 +114,45 @@ int readOneLine(char*filepath,int line_num,char* getLine){
 // osx/macos (apple sys)
 
 
-int is_in_list(char one_char, char*list_string){
-	int res = false;
+bool charIsInListStr(char one_char, char*list_string){
 	int cpt = 0;
 	bool carry = true;
 	while (cpt < strlen(list_string) && carry){
 		if (one_char == list_string[cpt]){
 			carry = false;
-			res = true;
 		}
 		cpt++;
 	}
-	return res;
+	return carry;
 }
+
+bool intIsInListints(int oneNum, int*listNum, int tailletab){
+	int cpt = 0;
+	bool carry = true;
+	while (cpt < tailletab && carry){
+		if (oneNum == listNum[cpt]){
+			carry = false;
+		}
+		cpt++;
+	}
+	return carry;
+}
+
+
+
 
 
 // comparer deux chaine (avec une proportion de simillarité)
 int strCompare(char*response, char*ask, float similarity){
 	// les chaines n'on pas la même taille :
-	int a = strlen(response), b = strlen(ask);
-	char samechars[( a > b) ? a : b];  // commun chars tab
 	int osize = strlen(response);
 	// * 0.01 for each chars who correspond 1 time
-	for (int i=0;i<a;i++){
-		for (int ii=0;ii<b;ii++){
+	for (int i=0;i<osize;i++){
+		for (int ii=0;ii<strlen(ask);ii++){
 			// similarity
 			if (response[i] == ask[ii]){
 				// already seen
-				if (is_in_list(response[i], samechars)){
+				if (response[i] == ask[i]){
 					similarity += (1/osize)/2;
 				} else {// never seen
 					similarity += (1/osize);
@@ -145,8 +175,7 @@ char menu(){
 	printf("│	q : quitter   	 		 │\n");
 	printf("│	c : continuer 	 		 │\n");
 	printf("│	s : enregistrer   		 │\n");
-	printf("│	a : afficher points		 │\n");	
-	printf("│	l : changer de niveau	 │\n");		
+	printf("│	a : afficher points		 │\n");		
 	printf("└────────────────────────────┘\n");
 	scanf("%c", etat);
 	return etat;
@@ -161,7 +190,8 @@ char*inputString(){
     char *str;
     int ch;
     size_t len = 0;
-    str = realloc(NULL, sizeof(*str)*size);//size is start size
+	//size is start size
+    str = realloc(NULL, sizeof(*str)*size);
     if(!str)return str;
     while(EOF!=(ch=fgetc(fp)) && ch != '\n'){
         str[len++]=ch;
@@ -199,7 +229,7 @@ int updateNav(char*toUpdate, int rank, char*base, char*endfilepath){
 // programme principal
 int main(){
 	// initialisation fonction aléatoire :
-	srand(time(null));
+	srand(time(NULL));
 	// choix ligne aléatoire pour la question
 	int choixLigne; 
 	char pseudo[25];
@@ -212,24 +242,25 @@ int main(){
 	int level; // store player level
 	// ne pas recommencer 2 fois la même question
 	// allocation dynamique : (tableau d'entiers pour le n° de lignes)
-	const char chemin[19] = "./level_ask/"; // filepath navigation
-	char tempChemin[9] = "";
-	char*navChemin[19] = "./level_ask/"; // chaine pour le déplacement (modifiable)
-	char reponseJoueur[3][10]; // stocke 10 chaines de charactères (3 listes de 10 réponses (string))
-	char*bonneReponse[10]; // stocke 10 chaines de charactères
-	int choixniveau;
-	int listNumNiveaux[3][10]; // stocker toutes les réponse déja faites pour chaque niveau
+	char chemin[19] = "./level_ask/"; // filepath navigation
+	char tempChemin[9] = ""; // stockage du nombre saisi par l'utilisateur convertit en chaine
+	char navChemin[19] = "./level_ask/"; // chaine pour le déplacement (modifiable)
+	char reponseJoueur[10][30]; // une liste de 10 chaines de caractères de 30 caractères
+	char bonneReponse[10]; // chaine de 10 charactères
+	int choixniveau;  // saisi utilisateur
+	int listNumNiveaux[10]; // stocker toutes les réponse (n°lignes) déja faites pour chaque niveau 
 	printf("Bienvenu dans le Quizz sur l'informatique\n");
 
-	printf("entrez votre pseudo : \n");
-	stringInput(pseudo);
-	prtinf("choisir le niveau : (facile, moyen, difficile)\n");
+	printf("entrez votre pseudo : (25 caractères max)\n");
+	strcpy(pseudo, inputString());
+	printf("choisir le niveau : (facile, moyen, difficile)\n");
 	printf("avec les touches respectives 1, 2, et 3 : \n");
 	scanf("%d", choixniveau);
-
+	printf("ça a planté !!!");
 	// on saisie le niveau qu'une seule fois (sauf si le joueur veut changer)
     if (choixniveau <= 3 && choixniveau >= 1){
 		updateNav(navChemin, choixniveau, chemin, "/ask.txt");
+		printf("done");
     } else { // saisie invalide
         printf("saisie non valide\n");
         carry = false;
@@ -237,7 +268,12 @@ int main(){
 
 
 	while(carry){
-		choixLigne = rand() % LIGNES_MAX_FICHIER;
+		// on fait un nouveau aléatoire tant que qu'il est déja présent dans la liste
+		// on aurait pu aussi faire une liste des éléments autorisés et les supprimer au fur et a mesure
+		// que le joueur choisi des choix et faire un nombre aléatoire des index de cette liste (éviter le while)
+		while (intIsInListints(choixLigne, listNumNiveaux, nbTours+1)){
+			choixLigne = rand() % LIGNES_MAX_FICHIER;
+		}
 		saisie_user = menu();
 		// je déteste les switch désolé
 		if (saisie_user == 'c'){
@@ -245,60 +281,52 @@ int main(){
 			printf("répondez a la question suivate :\n");
 			readOneLine(navChemin, choixLigne, bonneReponse);
 			// pour l'enregistrement des données
-			reponseJoueur[nbTours] = inputString(); 
+			strcpy(reponseJoueur[nbTours], inputString()); 
 			// ajouter points 
-			strCompare(bonneReponse, reponseJoueur, level);
+			strCompare(bonneReponse, reponseJoueur[nbTours], points);
 			// ajouter la ligne parcourue (pour pas reposer la même question)
-			questionsFaites[n] = choixLigne;
+			listNumNiveaux[nbTours] = choixLigne; // un entier dans un entier
 
 
 		} else if (saisie_user == 's'){
-			// on enregistre dans un fichier toutes
-			// les saisies précédentes 
-			saveText("userQuestions.txt")
-	
+			// on enregistre dans un fichier toutes les saisies précédentes 
+			//enregistrerScore(char* strData, char*pseudo, int niveau, float score, char*nomFichier)
+			char tempStartTrame[378] = "-----------------------------------------------------------------\n";
+			strcat(tempStartTrame, "QUESTIONS : \n");
+			char tempsLineNumberChar[2];
+			// pour toutes les question on les stack dans le fichier :
+			for (int i=0; i<11;i++){
+				sprintf(tempsLineNumberChar, "%d", i); // delete last psintf
+				strcat(tempStartTrame, "question n°");
+				strcat(tempStartTrame, tempsLineNumberChar);
+			}
+			
+			enregistrerScore(tempStartTrame, pseudo, level, points, "userQuestions.txt");
 		} else if (saisie_user == 'q'){
 			// on part sans enregistrer
-			carry = false
+			carry = false;
 		} else if (saisie_user == 'a'){
 			// afficher les points 
-			printf("vous avez : %f\t points\n", level);
-		} else if (saisie_user == 'l'){
-			// changer de niveau
-			printf("vous choisissez quel niveau ? (");
-			for (int j=1;i<4){
-				if (choixniveau != i){
-					printf("%d", j);
-				}
-				if (j != 3){
-					printf(',');
-				}
-			}
-			printf(")\n");
-			scanf("%d", choixniveau);
-			updateNav(navChemin, choixniveau, chemin, "/ask.txt");
-			// et on remet la listes des lignes déja faites a zero ?
-			printf("changement effectué");
-		} else if (gagne){
+			printf("vous avez : %.4f\t points.\n", points);
+		} else if (points >= 8.0){
 			// gagné !!!
+			// rappel : 1 poit par bonne réponses 
+			// pour gagner il faut 8 points (et on joue un son)
 			printf("vous avez gagné\n");
+			// jouer un son...
 			carry = false;
+		} else if (nbTours == 10){
+			// tt les questions terminées
+			printf("vous avez fait toutes les questions\n");
+			carry = false;			
 		} else {
 			// mauvaise saisie
 			printf("vous avez mal répondu !!!\n");
 			carry = false;
 		}
 		nbTours++;
-
-		questionsFaites = (int*)realloc(n * sizeof(int));
-
 	}
 	printf("au revoir\n");
-
-	free(questionsFaites);
-	free(reponseJoueur);
-	free(bonneReponse);
-
 	return EXIT_SUCCESS;
 }
 
