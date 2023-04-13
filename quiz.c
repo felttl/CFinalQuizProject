@@ -228,6 +228,28 @@ int updateNav(char*toUpdate, int rank, char*base, char*endfilepath){
 	return EXIT_SUCCESS;
 }
 
+// permet de mélanger l'ordre d'affichage des réponses possibles
+int melange(char*reponse0, char*reponse1, char*reponse2, char*reponse3){
+	srand(time(NULL));
+	int autorises[4];
+	int interdits[4]; // stocke au fur et a mesure les valeurs interdites
+	int cpt = 0;
+	while (cpt < 4){
+		
+		autorises[cpt] = rand() % 4;
+
+		interdits[cpt] = autorises[cpt];
+		while (autorises[cpt] == ){
+
+		}		
+		cpt++;
+	}
+
+
+
+	return EXIT_SUCCESS;
+}
+
 
 
 // programme principal
@@ -282,8 +304,9 @@ int main(){
 		
 		// je déteste les switch désolé
 		if (saisieUser == 'c'){
+			int a, b, c, d; // mélanger les questions (pour pas voir la solution toujours au même endroit)
 			// on continue de jouer
-			printf("répondez à la question suivante :\n\n");
+			printf("répondez à la question suivante avec (1, 2, 3):\n\n");
 			readOneLine(navChemin, choixLigne, bonneReponse);
 			// pour l'enregistrement des données
 			reponseJoueur[nbTours] = inputString();
@@ -324,9 +347,9 @@ int main(){
 			printf("vous avez gagné\n");
 			// jouer un son...
 			carry = false;
-		} else if (nbTours == 10){
+		} else if (...){
 			// tt les questions terminées
-			printf("vous avez fait toutes les questions\n");
+			printf("barvo,vous avez fait toutes les questions\n");
 			carry = false;		
 		} else if (saisieUser == 'l'){
 			// changer de niveau

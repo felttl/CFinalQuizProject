@@ -1,0 +1,10 @@
+651689
+non
+1 janvier 2000 epoch
+windows
+logout
+c'est une commande de gestion d'un ordinateur
+Lua
+Perl
+je sais pas
+une charactère
