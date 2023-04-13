@@ -252,18 +252,16 @@ int main(){
 	char bonneReponse[10]; // chaine de 10 charactères
 	int choixniveau;  // saisi utilisateur
 	int listNumNiveaux[3][10]; // stocker toutes les réponse (n°lignes) déja faites pour chaque niveau 
-	printf("Bienvenu dans le Quizz sur l'informatique\n");
+	printf("Bienvenu dans le Quizz sur l'informatique\n\n");
 
 	printf("entrez votre pseudo : (25 caractères max)\n");
 	strcpy(pseudo, inputString());
-	printf("choisir le niveau : (facile, moyen, difficile)\n");
+	printf("choisir le niveau : \n(facile, moyen, difficile)\n");
 	printf("avec les touches respectives 1, 2, et 3 : \n");
-	scanf("%d", choixniveau);
-	printf("ça a planté !!!");
+	scanf("%d", &choixniveau);
 	// on saisie le niveau qu'une seule fois (sauf si le joueur veut changer)
     if (choixniveau <= 3 && choixniveau >= 1){
 		updateNav(navChemin, choixniveau, chemin, "/ask.txt");
-		printf("done");
     } else { // saisie invalide
         printf("saisie non valide\n");
         carry = false;
