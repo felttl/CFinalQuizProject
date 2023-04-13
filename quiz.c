@@ -3,7 +3,7 @@
 #include <stdlib.h> // random, ...
 #include <time.h> // time usage
 #include <math.h> // math usage
-typedef enum{true, false} bool ; // boolean type (don't use shit library)
+typedef enum bool{true, false} bool ; // boolean type (don't use shit library)
 
 
 // faire un système de son pour savoir
@@ -84,7 +84,7 @@ int enregistrerScore(char*strData, char*pseudo, int niveau, float score, char*no
 /// ça marche
 // lire un fichier et afficher la ligne lue
 int readOneLine(char*filepath,int line_num,char* getLine){
-	printf("demande ouverture fichier : %s\n",filepath);
+	//printf("demande ouverture fichier : %s\n",filepath);
 	int linen = 0;
 	FILE * file;
 	char displayText[100];
@@ -93,7 +93,7 @@ int readOneLine(char*filepath,int line_num,char* getLine){
 	if(file == NULL){
 		printf("echec ouverture\n");
 	}
-	while(!feof(file) && carry){
+	while(!feof(file) && carry == true){
 		/*
 		 warning: the `gets' function is dangerous and should not be used.
 		*/
@@ -168,18 +168,19 @@ int strCompare(char*response, char*ask, float similarity){
 
 
 // créer un menu de sélection 
-char menu(){
-	char etat;
+char menu(void){
+	char res;
 	printf("\n");
-	printf("┌──────────── Menu ──────────┐\n");
-	printf("│	q : quitter   	 		 │\n");
-	printf("│	c : continuer 	 		 │\n");
-	printf("│	s : enregistrer   		 │\n");
-	printf("│	a : afficher points		 │\n");	
-	printf("│	l : changer de niveau	 │\n");		
+	printf("┌─────────── Menu ───────────┐\n");
+	printf("│   q : quitter              │\n");
+	printf("│   c : continuer            │\n");
+	printf("│   s : enregistrer          │\n");
+	printf("│   a : afficher points      │\n");	
+	printf("│   l : changer de niveau    │\n");		
 	printf("└────────────────────────────┘\n");
-	scanf("%c", etat);
-	return etat;
+	printf("→");
+	scanf("%c", &res); // car on sait pas si saisie user il y a déja une valeur dedans
+	return res;
 }
 
 // resize the filesize at input keyboard (From : Google) not require initiasize
@@ -234,6 +235,7 @@ int main(){
 	// initialisation fonction aléatoire :
 	srand(time(NULL));
 	// choix ligne aléatoire pour la question
+	char ch;
 	int choixLigne; 
 	char pseudo[25];
 	float points = 0.0; 
@@ -260,7 +262,7 @@ int main(){
 	printf("avec les touches respectives 1, 2, et 3 : \n");
 	scanf("%d", &choixniveau);
 	// on saisie le niveau qu'une seule fois (sauf si le joueur veut changer)
-    if (choixniveau <= 3 && choixniveau >= 1){
+    if ( choixniveau >= 1 && choixniveau <= 3){
 		updateNav(navChemin, choixniveau, chemin, "/ask.txt");
     } else { // saisie invalide
         printf("saisie non valide\n");
@@ -268,21 +270,24 @@ int main(){
     }
 
 
-	while(carry){
+	while(carry == true){
+		getchar();
+		saisieUser = menu();
 		// on fait un nouveau aléatoire tant que qu'il est déja présent dans la liste
 		// on aurait pu aussi faire une liste des éléments autorisés et les supprimer au fur et a mesure
 		// que le joueur choisi des choix et faire un nombre aléatoire des index de cette liste (éviter le while)
 		while (intIsInListints(choixLigne, listNumNiveaux[level], nbTours+1)){
 			choixLigne = rand() % LIGNES_MAX_FICHIER;
 		}
-		saisieUser = menu();
+		
 		// je déteste les switch désolé
 		if (saisieUser == 'c'){
 			// on continue de jouer
-			printf("répondez a la question suivate :\n");
+			printf("répondez à la question suivante :\n\n");
 			readOneLine(navChemin, choixLigne, bonneReponse);
 			// pour l'enregistrement des données
-			strcpy(reponseJoueur[nbTours], inputString()); 
+			reponseJoueur[nbTours] = inputString();
+			printf("saisie marche\n");			
 			// ajouter points 
 			strCompare(bonneReponse, reponseJoueur[nbTours], points);
 			// ajouter la ligne parcourue (pour pas reposer la même question)
@@ -334,12 +339,12 @@ int main(){
 			}
 		} else {
 			// mauvaise saisie
-			printf("vous avez mal répondu !!!\n");
+			printf("vous avez mal répondu (%c)!!!\n", saisieUser);
 			carry = false;
 		}
 		nbTours++;
 	}
-	printf("au revoir\n");
+	printf("au revoir %s...\n\n", pseudo);
 	return EXIT_SUCCESS;
 }
 
