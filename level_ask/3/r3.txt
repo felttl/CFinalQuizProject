@@ -1,0 +1,10 @@
+9.2857142
+c'est codé avec des charactères représentés par des nombres pour que ce soit compréhensible par un ordinateur
+logarithmique
+Modèle Logique des Données qui affiche une bases de données et ses relations
+c'est un filtre apliqué au traitement des données avancé
+Un framework est un ensemble d'outils pour avoir des "builtins" sur une machine
+Le Document Object Model (DOM) est la schématisation arcitecturale d'un système
+Le Browser Object Model (BOM) est ce qui sert a afficher des éléments dans une page web
+ça n'existe pas dans le domaine de l'informatique
+Modèle Vue Contrôleur en français est une instance puissante permettant de mettre en place un système et le déployer dans des conteneurs

@@ -2,9 +2,9 @@
 il y a légère différence
 ce sont les types de fichiers utilisé sur android pour les applications
 on utilise un bloc de rendering
-c'est comme un dessin ou image servant d'élément de personnage ou d'objet dans une animation dans un jeu
-le DNS (Domain Name System) permet de convertir les noms de domaines en adresses IP
-FTP (File Transfer Protocol) permet de partager des fichier sur un réseau TCP/IP
-un patron de programmation est un modèle réutilisable de "classe" en général servant a simplifier notre façon de coder
-ça permet de n'avoir qu'une seule instance d'un même objet.
-une classe fille ou dérivée ou 
+c'est de l'art ou une boisson
+ça permet de renvoyer des données depuis le Webmaster ver le serveur
+ça sert a envoyer des fichiers
+c'est un modèle pour créer d'autres modèles
+ça permet d'avoir plusieurs instance d'un même objet.
+une classe mère

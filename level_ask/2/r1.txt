@@ -4,7 +4,7 @@ c'un un nouveau langage crypté
 on utilise une interface spécifique
 c'est une image
 c'est un bout de réseau
-FTP (File Transfer Protocol) permet de d'envoyer des fichier sur une corte distance avec le wifi
-c'est uen classe
+ça n'existe pas
+c'est une classe
 ça permet de pas perdre de temps
 une classe fille ou dérivée ou 

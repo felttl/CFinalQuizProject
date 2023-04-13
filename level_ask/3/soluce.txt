@@ -7,4 +7,4 @@ Un framework est un ensemble d'outils et de composants logiciels organisés conf
 Le Document Object Model (DOM) est une interface de programmation normalisée par le W3C
 Le Browser Object Model (BOM) est le noyau de JavaScript dans le navigateur web qui permet de fournire des fonctionnalités au navigateur indépendamment du contenu de la page web.
 "what you see is what you get" permet à l'utilisateur de voir son document tel qu'il sera publié(mode preview lors de la création de nouveau contenu)
-Movdèle Vue Contrôleur en français est un motif d'architecture logicielle qui sépare une application en trois composants logiques : le modèle la vue et le contrôleur
+Modèle Vue Contrôleur en français est un motif d'architecture logicielle qui sépare une application en trois composants logiques : le modèle la vue et le contrôleur

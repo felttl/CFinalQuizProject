@@ -1,10 +1,10 @@
-42
-il y a légère différence
-ce sont les types de fichiers utilisé sur android pour les applications
-on utilise une machine virtuelle
-c'est comme un dessin ou image servant d'élément de personnage ou d'objet dans une animation dans un jeu
-le DNS (Domain Name System) permet de convertir les noms de domaines en adresses IP
-FTP (File Transfer Protocol) permet de partager des fichier sur un réseau TCP/IP
-un patron de programmation est un modèle réutilisable de "classe" en général servant a simplifier notre façon de coder
-ça permet de n'avoir qu'une seule instance d'un même objet.
-une classe fille ou dérivée ou 
+Dyma
+c'est pas un autre os?
+ce sont des formats d'images
+c'est un boot
+c'est un élément 3d
+c'est un convertisseur d'ip
+c'est un réseau local de type LAN ou WAN
+un grroup de classes
+ça permet d'avoir plusieurs fois le même objet
+une classe héritée ?

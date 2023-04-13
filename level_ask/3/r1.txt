@@ -1,0 +1,10 @@
+51.8898484
+c'est un système d'encodage
+exponentielle
+sert a afficher des éléments sur une image
+c'est une courbe décroissante servant a regroupper des signaux
+c'est une architecture d'ordinateur
+c'est un élément servant au bon fonctionnnement des applications
+Le Browser Object Model (BOM) est je JS servant a effectuer les taches avant l'execution d'autres codes sur votre machine (préprocesseur)
+"what you see is what you get" permet à l'utilisateur d'afficher le code qui sera toujours affiché dans une application 
+Modèle Vue Contrôleur en français est un un modèle qui permet de créer des relations entre les vues/classe entre chaque fichier dans le développement avec Swift

@@ -5,54 +5,23 @@
 #include <math.h> // math usage
 typedef enum bool{true, false} bool ; // boolean type (don't use shit library)
 
+//#include<windows.h>  // no such file or directory // pas de sons avec windows
 
-// faire un système de son pour savoir
-// si on a réussi ou non
-// je ne possède pas al lib sur ce pc
-//#include <windows.h> // a tester sur une autre machien pour tester le fonctionnement
-//#include <dos.h>
-
-/* 	Cahier Des Charges :
-
-	voir fichier cahier des charges
-
-
-
-*/
 // nb de lignes a ne pas dépasser
 static int LIGNES_MAX_FICHIER = 10;
 
 
-
-
-
-// permet de prendre une ligne (une question)
-// et la demander a l'utilisateur plus tard 
-// ça marche !!
-int request(int ligne, char* update_request, float pts, int niveau){
-	char* result = NULL;
-	int cpt = 0; // compteur ligne
-	char chaine[100]; // la longueur de chaque fichier est une question donc n'exède pas 100 charactères
-	FILE * fichierQuestion; // structure du contenu de fichier
-	fopen("ask.txt", "r");
-	while(!feof(fichierQuestion)){
-    	fgets(chaine, 100, fichierQuestion);
-    }
-	free(result); // libère la mémoire
-	return EXIT_SUCCESS;
-}
-
 // enregistre dans un fichier vide déja créé les éléments
 // persistance des données
 // doit ajouter dans le fichier chaque lignes qui a été saisi par le joueur ainsi que les autre infos
-int enregistrerScore(char*strData, char*pseudo, int niveau, float score, char*nomFichier){
+int enregistrerScore(char*strData, char*pseudo, int niveau, int score, char*nomFichier){
 
     /* Variable to store user content */
 	char niveauchar[2];
 	char scorestr[6]; 
 	// convert data 
 	sprintf(niveauchar, "%d", niveau);
-	sprintf(scorestr, "%f", score);
+	sprintf(scorestr, "%d", score);
     char data[strlen(strData)];
     /* File pointer to hold reference to our file */
     FILE * fPtr;
@@ -117,7 +86,7 @@ int readOneLine(char*filepath,int line_num,char* getLine){
 bool charIsInListStr(char oneChar, char*listString){
 	int cpt = 0;
 	bool carry = true;
-	while (cpt < strlen(listString) && carry){
+	while (cpt < strlen(listString) && carry == true){
 		if (oneChar == listString[cpt]){
 			carry = false;
 		}
@@ -129,7 +98,7 @@ bool charIsInListStr(char oneChar, char*listString){
 bool intIsInListints(int oneNum, int*listNum, int tailletab){
 	int cpt = 0;
 	bool carry = true;
-	while (cpt < tailletab && carry){
+	while (cpt < tailletab && carry == true){
 		if (oneNum == listNum[cpt]){
 			carry = false;
 		}
@@ -138,32 +107,6 @@ bool intIsInListints(int oneNum, int*listNum, int tailletab){
 	return carry;
 }
 
-
-
-
-
-// comparer deux chaine de façon plus avancée(avec une proportion de simillarité)
-int strCompare(char*response, char*ask, float similarity){
-	// les chaines n'on pas la même taille :
-	int osize = strlen(response);
-	// * 0.01 for each chars who correspond 1 time
-	for (int i=0;i<osize;i++){
-		for (int ii=0;ii<strlen(ask);ii++){
-			// similarity
-			if (response[i] == ask[ii]){
-				// same positions
-				if (i == ii){
-					similarity += (1/osize)/2;
-				} else {// different positions
-					similarity += (1/osize);
-				}
-			} else { // not same letter
-				similarity *= 101e-2;
-			} // size is different we don't add points
-		}
-	}
-	return EXIT_SUCCESS;
-}
 
 
 
@@ -228,28 +171,6 @@ int updateNav(char*toUpdate, int rank, char*base, char*endfilepath){
 	return EXIT_SUCCESS;
 }
 
-// permet de mélanger l'ordre d'affichage des réponses possibles
-int melange(char*reponse0, char*reponse1, char*reponse2, char*reponse3){
-	srand(time(NULL));
-	int autorises[4];
-	int interdits[4]; // stocke au fur et a mesure les valeurs interdites
-	int cpt = 0;
-	while (cpt < 4){
-		
-		autorises[cpt] = rand() % 4;
-
-		interdits[cpt] = autorises[cpt];
-		while (autorises[cpt] == ){
-
-		}		
-		cpt++;
-	}
-
-
-
-	return EXIT_SUCCESS;
-}
-
 
 
 // programme principal
@@ -307,9 +228,17 @@ int main(){
 			int a, b, c, d; // mélanger les questions (pour pas voir la solution toujours au même endroit)
 			// on continue de jouer
 			printf("répondez à la question suivante avec (1, 2, 3):\n\n");
+			// pour chaque réponses possibles :
+			for (int r=1;r<4;r++){
+				updateNav(navChemin, choixniveau, chemin, "/ask.txt");
+				readOneLine(navChemin, choixLigne, bonneReponse);
+			}
+			updateNav(navChemin, choixniveau, chemin, "/ask.txt");
+			// reponse a la fin (facile à deviner)
 			readOneLine(navChemin, choixLigne, bonneReponse);
 			// pour l'enregistrement des données
-			reponseJoueur[nbTours] = inputString();
+			scanf("%s", reponseJoueur[nbTours]);
+			getchar();
 			printf("saisie marche\n");			
 			// ajouter points 
 			strCompare(bonneReponse, reponseJoueur[nbTours], points);
@@ -327,7 +256,7 @@ int main(){
 			char tempsLineNumberChar[2];
 			// pour toutes les question on les stack dans le fichier :
 			for (int i=0; i<11;i++){
-				sprintf(tempsLineNumberChar, "%d", i); // delete last psintf
+				sprintf(tempsLineNumberChar, "%d", i); // delete last sprintf
 				strcat(tempStartTrame, "question n°");
 				strcat(tempStartTrame, tempsLineNumberChar);
 				strcat(tempStartTrame, reponseJoueur[i]);
@@ -340,14 +269,15 @@ int main(){
 		} else if (saisieUser == 'a'){
 			// afficher les points 
 			printf("vous avez : %.4f\t points.\n", points);
-		} else if (points >= 8.0){
+		} else if (points >= 8){
 			// gagné !!!
 			// rappel : 1 poit par bonne réponses 
 			// pour gagner il faut 8 points (et on joue un son)
 			printf("vous avez gagné\n");
 			// jouer un son...
+			printf("%c\a", ' ');
 			carry = false;
-		} else if (...){
+		} else if (nbTours > 30){
 			// tt les questions terminées
 			printf("barvo,vous avez fait toutes les questions\n");
 			carry = false;		

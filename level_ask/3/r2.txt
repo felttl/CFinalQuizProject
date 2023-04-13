@@ -1,0 +1,10 @@
+19.2857142
+c'est de l'ASCII codé
+linéaire
+Modèle Logique des Données qui facilite la programmation des requêtes SQL
+c'est un modificateur de signal
+Un framework est un ensemble d'outils et de pour concevoir des plans d'architecture
+Le Document Object Model (DOM) est une interface de développement logiciel
+Le Browser Object Model (BOM) est le service permettant le maintient des éléments dans uen page web
+"what you see is what you get" permet à l'utilisateur de voir en temps réel les bug produits par son code de façon plus précise
+Modèle Vue Contrôleur en français est un motif d'architecture appliqué au développement d'application mobiles destiné a faciliter la programmation
