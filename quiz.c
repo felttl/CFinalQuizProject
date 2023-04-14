@@ -60,7 +60,7 @@ int readOneLine(char*filepath,int line_num,char* getLine){
 	bool carry = true;
 	file = fopen(filepath, "r");
 	if(file == NULL){
-		printf("echec ouverture\n");
+		printf("echec ouverture du fichier : %s\n", filepath);
 	}
 	while(!feof(file) && carry == true){
 		/*
@@ -159,7 +159,7 @@ char*inputString(){
 // si un utilisateur veut changer de niveau en cours de partie
 int updateNav(char*toUpdate, int rank, char*base, char*endfilepath){
 	// onvertir l'entier en chaine ici 
-	char tempconvert[9] = " ";
+	char tempconvert[9];
 	// copie la partie gauche du chemin d'accés 
 	// doit écraser les données précédentes
 	strcpy(toUpdate, base); 
@@ -171,6 +171,30 @@ int updateNav(char*toUpdate, int rank, char*base, char*endfilepath){
 	return EXIT_SUCCESS;
 }
 
+// compare les chaine et ajoute un point sinécessaire
+int reponseJuste(char*bonneReponse, char*reponseJoueur, int point){
+	// pas la même taille
+	int osize = strlen(bonneReponse);  // on get la valeur depuis l'index que l'utilisateru va saisir 
+	int cpt = 0;
+	int res = 0;
+	bool carry = true;
+	if (osize != strlen(reponseJoueur)){
+		carry = false;
+	} else {
+		while (cpt < osize && carry == true){
+			if (bonneReponse[cpt] != reponseJoueur[cpt]){
+				carry = false;
+			}
+			cpt++;
+		}		
+	}
+	if (carry == true){
+		point++;
+	}
+	return EXIT_SUCCESS;
+}
+
+
 
 
 // programme principal
@@ -181,7 +205,7 @@ int main(){
 	char ch;
 	int choixLigne; 
 	char pseudo[25];
-	float points = 0.0; 
+	int points = 0; 
 	bool carry = true;
 	char saisieUser;
 	// ne dois pas dépasser le nombre de question dans le fichier
@@ -194,7 +218,7 @@ int main(){
 	char tempChemin[9] = ""; // stockage du nombre saisi par l'utilisateur convertit en chaine
 	char navChemin[19] = "./level_ask/"; // chaine pour le déplacement (modifiable)
 	char reponseJoueur[10][300]; // une liste de 10 chaines de caractères de 300 caractères
-	char bonneReponse[10]; // chaine de 10 charactères
+	char bonneReponse[300]; // chaine de 300 charactères
 	int choixniveau;  // saisi utilisateur
 	int listNumNiveaux[3][10]; // stocker toutes les réponse (n°lignes) déja faites pour chaque niveau 
 	printf("Bienvenu dans le Quizz sur l'informatique\n\n");
@@ -223,25 +247,49 @@ int main(){
 			choixLigne = rand() % LIGNES_MAX_FICHIER;
 		}
 		
-		// je déteste les switch désolé
+		// je déteste les switch(s) désolé
 		if (saisieUser == 'c'){
 			int a, b, c, d; // mélanger les questions (pour pas voir la solution toujours au même endroit)
 			// on continue de jouer
-			printf("répondez à la question suivante avec (1, 2, 3):\n\n");
-			// pour chaque réponses possibles :
-			for (int r=1;r<4;r++){
-				updateNav(navChemin, choixniveau, chemin, "/ask.txt");
-				readOneLine(navChemin, choixLigne, bonneReponse);
+			printf("répondez à la question suivante avec (1, 2, 3):\n\n\t");
+			// affichage question :
+			readOneLine(navChemin, choixLigne, bonneReponse);			
+
+			// affichage des 3 questions
+			char tempNumcp[21] = "./level_ask/1/r1.txt"; // convertit le nombre en entier
+			char temprescharcp[30] = "./level_ask/1/soluce.txt";
+			tempNumcp[12] = level + 1 + '0';
+			for (int ii=1;ii<4;ii++){
+				// PROBLEME ICI !!!
+				tempNumcp[14] = ii + '0';
+				readOneLine(tempNumcp, choixLigne, bonneReponse);
 			}
-			updateNav(navChemin, choixniveau, chemin, "/ask.txt");
-			// reponse a la fin (facile à deviner)
-			readOneLine(navChemin, choixLigne, bonneReponse);
+			temprescharcp[12] = level + 1 + '0';			
+			readOneLine(temprescharcp, choixLigne, bonneReponse);
+
+			// for (int r=1;r<4;r++){
+			// 	char tempNumQuestion[20]; // stocke chaque filepath de questions
+			// 	char tempNumConvert; // convertit le nombre en entier
+			// 	printf("%d) ", r);
+			// 	// je modifie le fichier ouvert pour avoir la bonne question
+			// 	tempNumQuestion[0] = 'r';// met le premier a "r"
+			// 	//sprintf(tempNumConvert, "%d", r); // convertit en chaine
+			// 	tempNumQuestion[1] = r + '0'; 
+			// 	tempNumQuestion[2] = '.';
+			// 	tempNumQuestion[3] = 't';				
+			// 	tempNumQuestion[4] = 'x';
+			// 	tempNumQuestion[5] = 't';
+			// 	updateNav(navChemin, choixniveau, "./level_ask/", tempNumQuestion);
+			// 	readOneLine(navChemin, choixLigne, bonneReponse);
+			// }
 			// pour l'enregistrement des données
 			scanf("%s", reponseJoueur[nbTours]);
 			getchar();
 			printf("saisie marche\n");			
 			// ajouter points 
-			strCompare(bonneReponse, reponseJoueur[nbTours], points);
+			updateNav(navChemin, level, chemin, "/soluce.txt");
+			readOneLine(navChemin, choixLigne, bonneReponse);
+			reponseJuste(bonneReponse, reponseJoueur[nbTours], points);
 			// ajouter la ligne parcourue (pour pas reposer la même question)
 			listNumNiveaux[level][nbTours] = choixLigne; // un entier dans un entier
 			// on buff le niveau comme écrit dans les cahier des charges
@@ -267,8 +315,8 @@ int main(){
 			// on part sans enregistrer
 			carry = false;
 		} else if (saisieUser == 'a'){
-			// afficher les points 
-			printf("vous avez : %.4f\t points.\n", points);
+			// afficher les points (peut être flottant)
+			printf("vous avez : %d\t points.\n", points);
 		} else if (points >= 8){
 			// gagné !!!
 			// rappel : 1 poit par bonne réponses 
@@ -285,7 +333,7 @@ int main(){
 			// changer de niveau
 			int tempLevelError = level; // crée une copie de la variable level (si on modifie level il n'y a pas d'incidence)
 			printf("vous choisissez quel niveau ?\n");
-			scanf("%d", level);
+			scanf("%d", &level);
 			if (level < 1 && level > 3){
 				level = tempLevelError;
 				printf("mauvaise saisie, le niveau va rester le même\n");
