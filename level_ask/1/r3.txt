@@ -7,4 +7,4 @@ c'est la commande de suppression de contenu
 PHP
 C#
 0 + 1
-majuscule et minuscule
+minuscule

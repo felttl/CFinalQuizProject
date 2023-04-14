@@ -11,42 +11,56 @@ typedef enum bool{true, false} bool ; // boolean type (don't use shit library)
 static int LIGNES_MAX_FICHIER = 10;
 
 
+// raccourcis :
+// permettre de sauvegarder une ligne
+// nettoie les données précédemment sauvegardés dans el fichier
+int saveFileLines(char*filename, char*data){
+    FILE *fp;
+    fp = fopen(filename, "w+");
+	if(fp == NULL){
+        /* File not created hence exit */
+        printf("can't create /edditing file at file : (%s)\n", filename);
+        exit(EXIT_FAILURE);
+    }
+    fputs(data, fp);
+    fclose(fp);
+    return EXIT_SUCCESS;
+}
+
+// fonction MARCHE (CHECKED) (seule)
 // enregistre dans un fichier vide déja créé les éléments
 // persistance des données
 // doit ajouter dans le fichier chaque lignes qui a été saisi par le joueur ainsi que les autre infos
-int enregistrerScore(char*strData, char*pseudo, int niveau, int score, char*nomFichier){
+int enregistrerScore(char*strData, char*pseudo, int niveau, int score, int questionUtilisateur, char*nomFichier){
 
     /* Variable to store user content */
 	char niveauchar[2];
 	char scorestr[6]; 
+	char useraskstr[2];
+	// optimize stack informations into string
+	char insert[strlen(strData)+19+strlen(nomFichier)+2];
 	// convert data 
 	sprintf(niveauchar, "%d", niveau);
 	sprintf(scorestr, "%d", score);
-    char data[strlen(strData)];
-    /* File pointer to hold reference to our file */
-    FILE * fPtr;
-	// write in existing file
-    fPtr = fopen(nomFichier, "w");
-    /* fopen() return NULL if last operation was unsuccessful */
-    if(fPtr == NULL){
-        /* File not created hence exit */
-        printf("Unable to create file.\n");
-        exit(EXIT_FAILURE);
-    }
-	// escape sequence 
-	strcat(niveauchar, "\n");
-	strcat(scorestr, "\n");
-	strcat(strData, "\n");
-	strcat(pseudo, "\n");
-    /* Write data to file */
-    fputs(strData, fPtr);
-	fputs("niveau : ", fPtr);
-	fputs(pseudo, fPtr);
-	fputs("score : ", fPtr);
-    /* Close file to save file data */
-    fclose(fPtr);
-    /* Success message */
-    printf("File created and saved successfully. :) \n");
+	sprintf(useraskstr, "%d", questionUtilisateur);
+
+    strcat(insert, "pseudo : ");
+    strcat(insert, pseudo);    
+
+    strcat(insert, "\nniveau : ");
+    strcat(insert, niveauchar);
+
+    strcat(insert, "\nscore : ");
+    strcat(insert, scorestr);    
+    
+    strcat(insert, "\nquestion choisie n° ");
+    strcat(insert, useraskstr);
+    strcat(insert, "\nadd infos:");
+    strcat(insert, strData); // can be single spacebar string into a tab
+    strcat(insert, " \n");	
+		
+	// explicit (warning message included)
+	saveFileLines(nomFichier, insert);	
     return EXIT_SUCCESS;
 }
 
@@ -197,6 +211,7 @@ int reponseJuste(char*bonneReponse, char*reponseJoueur, int point){
 
 
 
+
 // programme principal
 int main(){
 	// initialisation fonction aléatoire :
@@ -219,7 +234,8 @@ int main(){
 	char navChemin[19] = "./level_ask/"; // chaine pour le déplacement (modifiable)
 	char reponseJoueur[10][300]; // une liste de 10 chaines de caractères de 300 caractères
 	char bonneReponse[300]; // chaine de 300 charactères
-	int choixniveau;  // saisi utilisateur
+	int choixniveau;  // saisi du niveau utilisateur
+	int choixlignejoueur; // saisi du n° de la question par le joueur
 	int listNumNiveaux[3][10]; // stocker toutes les réponse (n°lignes) déja faites pour chaque niveau 
 	printf("Bienvenu dans le Quizz sur l'informatique\n\n");
 
@@ -249,68 +265,49 @@ int main(){
 		
 		// je déteste les switch(s) désolé
 		if (saisieUser == 'c'){
-			int a, b, c, d; // mélanger les questions (pour pas voir la solution toujours au même endroit)
 			// on continue de jouer
-			printf("répondez à la question suivante avec (1, 2, 3):\n\n\t");
-			// affichage question :
+			printf("répondez à la question suivante avec (1, 2, 3, 4):\n");
+			// affichage question :		
 			readOneLine(navChemin, choixLigne, bonneReponse);			
 
 			// affichage des 3 questions
 			char tempNumcp[21] = "./level_ask/1/r1.txt"; // convertit le nombre en entier
 			char temprescharcp[30] = "./level_ask/1/soluce.txt";
 			tempNumcp[12] = level + 1 + '0';
-			for (int ii=1;ii<4;ii++){
-				// PROBLEME ICI !!!
-				tempNumcp[14] = ii + '0';
-				readOneLine(tempNumcp, choixLigne, bonneReponse);
-			}
-			temprescharcp[12] = level + 1 + '0';			
+			temprescharcp[12] = level + 1 + '0';		
+			// on peut pas boucler l'affichage des questions		
+			printf("%d) ", 1);
+			readOneLine(tempNumcp, choixLigne, bonneReponse);
+			tempNumcp[15] = 2 + '0';
+			printf("%d) ", 2);			
+			readOneLine(tempNumcp, choixLigne, bonneReponse);
+			tempNumcp[15] = 3 + '0';	
+			printf("%d) ", 3);						
+			readOneLine(tempNumcp, choixLigne, bonneReponse);			
+			printf("%d) ", 4);					
 			readOneLine(temprescharcp, choixLigne, bonneReponse);
-
-			// for (int r=1;r<4;r++){
-			// 	char tempNumQuestion[20]; // stocke chaque filepath de questions
-			// 	char tempNumConvert; // convertit le nombre en entier
-			// 	printf("%d) ", r);
-			// 	// je modifie le fichier ouvert pour avoir la bonne question
-			// 	tempNumQuestion[0] = 'r';// met le premier a "r"
-			// 	//sprintf(tempNumConvert, "%d", r); // convertit en chaine
-			// 	tempNumQuestion[1] = r + '0'; 
-			// 	tempNumQuestion[2] = '.';
-			// 	tempNumQuestion[3] = 't';				
-			// 	tempNumQuestion[4] = 'x';
-			// 	tempNumQuestion[5] = 't';
-			// 	updateNav(navChemin, choixniveau, "./level_ask/", tempNumQuestion);
-			// 	readOneLine(navChemin, choixLigne, bonneReponse);
-			// }
-			// pour l'enregistrement des données
-			scanf("%s", reponseJoueur[nbTours]);
-			getchar();
-			printf("saisie marche\n");			
-			// ajouter points 
-			updateNav(navChemin, level, chemin, "/soluce.txt");
-			readOneLine(navChemin, choixLigne, bonneReponse);
-			reponseJuste(bonneReponse, reponseJoueur[nbTours], points);
+			printf("→"); // saisie user
+			scanf("%d", &choixlignejoueur);		
+			// ajouter points 		
+			if (choixlignejoueur == 4){
+				points++;
+			}
 			// ajouter la ligne parcourue (pour pas reposer la même question)
-			listNumNiveaux[level][nbTours] = choixLigne; // un entier dans un entier
+
+			listNumNiveaux[level][nbTours % 10] = choixLigne; // un entier dans un entier
 			// on buff le niveau comme écrit dans les cahier des charges
 			if (level < 3 && points >= 8){
 				level++;
 			}
 		} else if (saisieUser == 's'){
-			// on enregistre dans un fichier toutes les saisies précédentes 
-			//enregistrerScore(char* strData, char*pseudo, int niveau, float score, char*nomFichier)
-			char tempStartTrame[2378] = "-----------------------------------------------------------------\n";
-			strcat(tempStartTrame, "QUESTIONS : \n");
-			char tempsLineNumberChar[2];
-			// pour toutes les question on les stack dans le fichier :
-			for (int i=0; i<11;i++){
-				sprintf(tempsLineNumberChar, "%d", i); // delete last sprintf
-				strcat(tempStartTrame, "question n°");
-				strcat(tempStartTrame, tempsLineNumberChar);
-				strcat(tempStartTrame, reponseJoueur[i]);
+			// on enregistre dans un fichier toutes les saisies précédentes 1 fois (n° lignes + niveau)
+			// permet de choisir le niveau que l'on veut enregistrer
+			if (nbTours > 1){
+				enregistrerScore(" ", pseudo, level, points, choixlignejoueur, "userQuestions.txt");				
+			} else {
+				printf("mauvaise saisie il faut au moin avoir fait une question pour pouvoir enregistrer !\n");
 			}
-			
-			enregistrerScore(tempStartTrame, pseudo, level, points, "userQuestions.txt");
+
 		} else if (saisieUser == 'q'){
 			// on part sans enregistrer
 			carry = false;
